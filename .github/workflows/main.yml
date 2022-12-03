@@ -2,24 +2,64 @@ name: BuildArtifacts
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:
-    runs-on: windows-latest
-
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      max-parallel: 2
+      matrix:
+        config:
+          - os: ubuntu-latest
+          - os: windows-latest
+    env:
+      is-windows: ${{ matrix.config.os == windows-latest }}
+      is-ubuntu: ${{ matrix.config.os == ubuntu-latest }}
     steps:
     - uses: actions/checkout@v3
+    - name: Cache
+      uses: actions/cache@v3.0.11
+      with:
+        path: installed
+        key: ${{ matrix.config.os }}-vcpkg-install
+        
+    - name: Setup swap (Windows)
+      if: ${{ env.is-windows }}
+      run: |
+        wmic pagefileset where name="C:\\pagefile.sys" set InitialSize=8000000,MaximumSize=8000000
 
-    - name: Bootstrap vcpkg
+    - name: Bootstrap vcpkg (Windows)
+      if: ${{ env.is-windows }}
       run: ./bootstrap-vcpkg.bat
 
-    - name: Build artifacts
-      # Build your program with the given configuration
+    - name: Build artifacts (Windows)
+      if: ${{ env.is-windows }}
       run: ./iconic-install-dependencies.bat
     
-    - name: Export artifacts
+    - name: Export artifacts (Windows)
+      if: ${{ env.is-windows }}
       run: ./iconic-export-dependencies.bat
+      
+    - name: Setup swap (Ubunut)
+      if: ${{ env.is-ubuntu }}
+      run: |
+        fallocate -l 8G myswapfile && \
+        chmod 600 myswapfile && \
+        mkswap myswapfile && \
+        swapon myswapfile
+      
+    - name: Bootstrap vcpkg (Ubunut)
+      if: ${{ env.is-ubuntu }}
+      run: ./bootstrap-vcpkg.sh
+
+    - name: Build artifacts (Ubunut)
+      if: ${{ env.is-ubuntu }}
+      run: ./iconic-install-dependencies.sh
+    
+    - name: Export artifacts (Ubunut)
+      if: ${{ env.is-ubuntu }}
+      run: ./iconic-export-dependencies.sh
 
