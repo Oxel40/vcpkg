@@ -16,8 +16,8 @@ jobs:
           - os: ubuntu-latest
           - os: windows-latest
     env:
-      is-windows: ${{ matrix.config.os == "windows-latest" }}
-      is-ubuntu: ${{ matrix.config.os == "ubuntu-latest" }}
+      is-windows: ${{ matrix.config.os == 'windows-latest' }}
+      is-ubuntu: ${{ matrix.config.os == 'ubuntu-latest' }}
     steps:
     - uses: actions/checkout@v3
     - name: Cache
