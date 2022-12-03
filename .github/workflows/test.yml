@@ -55,4 +55,7 @@ jobs:
           name: Release ${{ github.sha }}
           draft: false
           prerelease: false
-          files: ./artifacts/*.zip
+          files: |
+            artifacts/*.zip
+            artifacts/iconic-deps-ubuntu-latest.zip
+            artifacts/iconic-deps-macos-latest.zip
