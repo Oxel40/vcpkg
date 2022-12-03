@@ -23,10 +23,12 @@ jobs:
         path: installed
         key: ${{ matrix.config.os }}-vcpkg-install
         
-    - name: Setup swap (Windows)
+    - name: Configure Pagefile (Windows)
       if: ${{ matrix.config.os == 'windows-latest' }}
-      run: |
-        wmic pagefileset where name="C:\\pagefile.sys" set InitialSize=8000000,MaximumSize=8000000
+      uses: al-cheb/configure-pagefile-action@v1.3
+      with:
+        minimum-size: 10GB
+        maximum-size: 12GB
 
     - name: Bootstrap vcpkg (Windows)
       if: ${{ matrix.config.os == 'windows-latest' }}
@@ -42,11 +44,9 @@ jobs:
       
     - name: Setup swap (Ubunut)
       if: ${{ matrix.config.os == 'ubuntu-latest' }}
-      run: |
-        fallocate -l 8G myswapfile && \
-        chmod 600 myswapfile && \
-        mkswap myswapfile && \
-        swapon myswapfile
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 10
       
     - name: Bootstrap vcpkg (Ubunut)
       if: ${{ matrix.config.os == 'ubuntu-latest' }}
