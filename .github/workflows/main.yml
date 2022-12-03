@@ -1,0 +1,25 @@
+name: BuildArtifacts
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Bootstrap vcpkg
+      run: ./bootstrap-vcpkg.bat
+
+    - name: Build artifacts
+      # Build your program with the given configuration
+      run: ./iconic-install-dependencies.bat
+    
+    - name: Export artifacts
+      run: ./iconic-export-dependencies.bat
+
