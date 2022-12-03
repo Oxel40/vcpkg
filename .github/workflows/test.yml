@@ -41,6 +41,8 @@ jobs:
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Download artifacts
         id: download
         uses: actions/download-artifact@v3
