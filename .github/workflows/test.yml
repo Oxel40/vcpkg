@@ -43,6 +43,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: ./artifacts
+      - name: List artifacts
+        run: pwd && ls -l ./artifacts
       - name: Create release
         id: create_release
         uses: softprops/action-gh-release@v1
