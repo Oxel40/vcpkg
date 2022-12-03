@@ -14,7 +14,7 @@ jobs:
       matrix:
         config:
           - os: ubuntu-latest
-          - os: macos-latest
+          # - os: macos-latest
           # - os: windows-latest
     steps:
       # checkout of cource
@@ -93,7 +93,7 @@ jobs:
           https://api.github.com/repos/${{ github.repository }}/releases \
           -d '{"tag_name":"${{ github.ref_name }}-${{ github.run_number }}","draft":false,"prerelease":false,"generate_release_notes":false}' \
           | json assets_url | sed 's/api/uploads/' > uploads-url.txt
-      - name: test
+      - name: test urls
         run: |
           ls ${{ steps.download.outputs.download-path }} \
           | xargs -I % sh -c " \
@@ -108,6 +108,6 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ github.token }}" \
               -H "Content-Type": "application/zip" \
-              --upload-file '${{ steps.download.outputs.download-path }}/%'
-              $(cat uploads-url.txt)?name=% \
+              --upload-file '${{ steps.download.outputs.download-path }}/%' \
+              '$(cat uploads-url.txt)?name=%' \
               "
