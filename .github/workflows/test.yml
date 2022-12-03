@@ -56,6 +56,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/*.zip
-            artifacts/iconic-deps-ubuntu-latest.zip
-            artifacts/iconic-deps-macos-latest.zip
+            ${{ github.workspace }}/artifacts/*.zip
+            ${{ github.workspace }}/artifacts/iconic-deps-ubuntu-latest.zip
+            ${{ github.workspace }}/artifacts/iconic-deps-macos-latest.zip
+            test.bat
