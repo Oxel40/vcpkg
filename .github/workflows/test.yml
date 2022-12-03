@@ -23,7 +23,7 @@ jobs:
         # uses: softprops/action-gh-release@v1
         # env:
         #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: zip test.bat
+        run: zip test.zip test.bat
       # and finally do an upload!
       - name: Upload atrifacts
         uses: actions/upload-artifact@v3
