@@ -40,20 +40,28 @@ jobs:
       # ... whatever build and packaging steps you need here
       # and finally do an upload!
       - name: Upload release assets
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          # This is how it will be named on the release page. Put hatever name
-          # you like, remember that they need to be different for each platform.
-          # You can choose any build matrix parameters. For Rust I use the
-          # target triple.
-          asset_name: iconic-deps-${{ matrix.config.os }}.zip
-          # The path to the file you want to upload.
-          asset_path: ./test.bat
-          # probably you will need to change it, but most likely you are
-          # uploading a binary file
-          asset_content_type: application/octet-stream
+        # uses: softprops/action-gh-release@v1
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl \
+          -X POST \
+          -H "Content-Type: application/octet-stream" \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          --upload-file test.bat \
+          ${{ needs.create_release.outputs.upload_url }}?name=iconic-deps-${{ matrix.config.os }}.zip
+        # with:
+        #   upload_url: ${{ needs.create_release.outputs.upload_url }}
+        #   # This is how it will be named on the release page. Put hatever name
+        #   # you like, remember that they need to be different for each platform.
+        #   # You can choose any build matrix parameters. For Rust I use the
+        #   # target triple.
+        #   asset_name: iconic-deps-${{ matrix.config.os }}.zip
+        #   # The path to the file you want to upload.
+        #   asset_path: ./test.bat
+        #   # probably you will need to change it, but most likely you are
+        #   # uploading a binary file
+        #   asset_content_type: application/octet-stream
 
 
