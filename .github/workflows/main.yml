@@ -12,6 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: Jimver/cuda-toolkit@v0.2.8
 
     - name: Bootstrap vcpkg
       run: ./bootstrap-vcpkg.bat
