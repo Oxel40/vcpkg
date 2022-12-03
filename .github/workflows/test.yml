@@ -65,7 +65,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # asset_path: ${{ steps.download.outputs.download-path }}/iconic-deps-ubuntu-latest.zip
-          asset_path: test.bat
+          asset_path: ${{ steps.download.outputs.download-path }}/test.bat
           asset_name: iconic-deps-ubuntu-latest.zip
           asset_content_type: application/octet-stream
       - name: Upload artifact macos-latest
@@ -75,7 +75,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           # asset_path: ${{ steps.download.outputs.download-path }}/iconic-deps-macos-latest.zip
-          asset_path: test.bat
+          asset_path: ${{ steps.download.outputs.download-path }}/test.bat
           asset_name: iconic-deps-macos-latest.zip
           asset_content_type: application/octet-stream
 
