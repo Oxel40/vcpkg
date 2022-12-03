@@ -47,7 +47,8 @@ jobs:
         run: pwd && ls -l ./artifacts
       - name: Create release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        # uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v0.1.13
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -56,7 +57,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ${{ github.workspace }}/artifacts/*.zip
-            ${{ github.workspace }}/artifacts/iconic-deps-ubuntu-latest.zip
-            ${{ github.workspace }}/artifacts/iconic-deps-macos-latest.zip
+            artifacts/*.zip
             test.bat
