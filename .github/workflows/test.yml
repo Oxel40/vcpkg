@@ -58,6 +58,10 @@ jobs:
           prerelease: false
           files: ${{ steps.download.outputs.download-path }}/*
       # This is only needed currently because files in ^ is broken
+      - name: list ${{ github.workspace }}
+        run: ls -la ${{ github.workspace }}
+      - name: list ${{ steps.download.outputs.download-path }}
+        run: ls -la ${{ steps.download.outputs.download-path }}
       - name: Upload artifact ubuntu-latest
         uses: actions/upload-release-asset@v1
         env:
