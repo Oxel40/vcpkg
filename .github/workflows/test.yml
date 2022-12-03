@@ -57,3 +57,23 @@ jobs:
           draft: false
           prerelease: false
           files: ${{ steps.download.outputs.download-path }}/*
+      # This is only needed currently because files in ^ is broken
+      - name: Upload artifact ubuntu-latest
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.download.outputs.download-path }}/iconic-deps-ubuntu-latest.zip
+          asset_name: iconic-deps-ubuntu-latest.zip
+          asset_content_type: application/octet-stream
+      - name: Upload artifact macos-latest
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.download.outputs.download-path }}/iconic-deps-macos-latest.zip
+          asset_name: iconic-deps-macos-latest.zip
+          asset_content_type: application/octet-stream
+
