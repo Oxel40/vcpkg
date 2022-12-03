@@ -41,6 +41,8 @@ jobs:
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
+      - name: Get json parser
+        run: npm install -g json
       - name: Download artifacts
         id: download
         uses: actions/download-artifact@v3
@@ -83,12 +85,23 @@ jobs:
       #     asset_name: iconic-deps-macos-latest.zip
       #     asset_content_type: application/octet-stream
       - name: Create release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
           curl \
           -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ github.token }}" \
           https://api.github.com/repos/${{ github.repository }}/releases \
-          -d '{"tag_name":"${{ github.ref_name }}-${{ github.run_number }}","draft":false,"prerelease":false,"generate_release_notes":false}'
+          -d '{"tag_name":"${{ github.ref_name }}-${{ github.run_number }}","draft":false,"prerelease":false,"generate_release_notes":false}' \
+          | json assets_url | sed 's/api/uploads/' > uploads-url.txt
+            - name: Create release
+      - name: Upload artifacts to release
+        run: |
+          ls ${{ steps.download.outputs.download-path }} \
+          | xargs -I %
+          curl \
+          -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ github.token }}" \
+          -H "Content-Type": "application/zip" \
+          --upload-file "${{ steps.download.outputs.download-path }}/%"
+          $(cat uploads-url.txt)?name=%
