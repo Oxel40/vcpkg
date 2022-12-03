@@ -10,6 +10,7 @@ jobs:
     runs-on: ${{ matrix.config.os }} # we run many different builds
     strategy:
       # just an example matrix
+      max-parallel: 2
       matrix:
         config:
           - os: ubuntu-latest
@@ -46,11 +47,11 @@ jobs:
         with:
           path: ./artifacts
       - name: List artifacts
-        run: pwd && ls -l ./artifacts
+        run: echo "${{ steps.download.outputs.download-path }}" && ls -al ${{ steps.download.outputs.download-path }}
       - name: Create release
         id: create_release
         # uses: softprops/action-gh-release@v1
-        uses: softprops/action-gh-release@v0.1.13
+        uses: softprops/action-gh-release@v0.1.11
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
