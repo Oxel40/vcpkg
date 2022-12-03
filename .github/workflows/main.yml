@@ -15,9 +15,6 @@ jobs:
         config:
           - os: ubuntu-latest
           - os: windows-latest
-    env:
-      is-windows: ${{ matrix.config.os == 'windows-latest' }}
-      is-ubuntu: ${{ matrix.config.os == 'ubuntu-latest' }}
     steps:
     - uses: actions/checkout@v3
     - name: Cache
@@ -27,24 +24,24 @@ jobs:
         key: ${{ matrix.config.os }}-vcpkg-install
         
     - name: Setup swap (Windows)
-      if: ${{ env.is-windows }}
+      if: ${{ matrix.config.os == 'windows-latest' }}
       run: |
         wmic pagefileset where name="C:\\pagefile.sys" set InitialSize=8000000,MaximumSize=8000000
 
     - name: Bootstrap vcpkg (Windows)
-      if: ${{ env.is-windows }}
+      if: ${{ matrix.config.os == 'windows-latest' }}
       run: ./bootstrap-vcpkg.bat
 
     - name: Build artifacts (Windows)
-      if: ${{ env.is-windows }}
+      if: ${{ matrix.config.os == 'windows-latest' }}
       run: ./iconic-install-dependencies.bat
     
     - name: Export artifacts (Windows)
-      if: ${{ env.is-windows }}
+      if: ${{ matrix.config.os == 'windows-latest' }}
       run: ./iconic-export-dependencies.bat
       
     - name: Setup swap (Ubunut)
-      if: ${{ env.is-ubuntu }}
+      if: ${{ matrix.config.os == 'ubuntu-latest' }}
       run: |
         fallocate -l 8G myswapfile && \
         chmod 600 myswapfile && \
@@ -52,14 +49,14 @@ jobs:
         swapon myswapfile
       
     - name: Bootstrap vcpkg (Ubunut)
-      if: ${{ env.is-ubuntu }}
+      if: ${{ matrix.config.os == 'ubuntu-latest' }}
       run: ./bootstrap-vcpkg.sh
 
     - name: Build artifacts (Ubunut)
-      if: ${{ env.is-ubuntu }}
+      if: ${{ matrix.config.os == 'ubuntu-latest' }}
       run: ./iconic-install-dependencies.sh
     
     - name: Export artifacts (Ubunut)
-      if: ${{ env.is-ubuntu }}
+      if: ${{ matrix.config.os == 'ubuntu-latest' }}
       run: ./iconic-export-dependencies.sh
 
