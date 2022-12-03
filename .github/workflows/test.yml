@@ -36,7 +36,8 @@ jobs:
   create_release:
     name: Create release
     needs: generate_assets
-    runs-on: ubuntu-latest
+    # runs-on: ubuntu-latest
+    runs-on: windows-latest
     # Note this. We are going to use that in further jobs.
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -46,12 +47,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: ./artifacts
-      - name: List artifacts
-        run: echo "${{ steps.download.outputs.download-path }}" && ls -al ${{ steps.download.outputs.download-path }}
       - name: Create release
         id: create_release
         # uses: softprops/action-gh-release@v1
-        uses: softprops/action-gh-release@v0.1.11
+        uses: softprops/action-gh-release@v0.1.13
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
