@@ -93,11 +93,17 @@ jobs:
           https://api.github.com/repos/${{ github.repository }}/releases \
           -d '{"tag_name":"${{ github.ref_name }}-${{ github.run_number }}","draft":false,"prerelease":false,"generate_release_notes":false}' \
           | json assets_url | sed 's/api/uploads/' > uploads-url.txt
-      - name: test urls
+      - name: Echo commands
         run: |
           ls ${{ steps.download.outputs.download-path }} \
-          | xargs -I % sh -c " \
-              echo '$(cat uploads-url.txt)?name=%' \
+          | xargs -I % echo " \
+              curl \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              -H "Content-Type": "application/zip" \
+              --upload-file '${{ steps.download.outputs.download-path }}/%' \
+              '$(cat uploads-url.txt)?name=%' \
               "
       - name: Upload artifacts to release
         run: |
