@@ -25,13 +25,13 @@ jobs:
         # uses: softprops/action-gh-release@v1
         # env:
         #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: zip test.zip test.bat
+        run: zip iconic-deps-${{ matrix.config.os }}.zip test.bat
       # and finally do an upload!
       - name: Upload atrifacts
         uses: actions/upload-artifact@v3
         with:
           name: iconic-deps-${{ matrix.config.os }}.zip
-          path: test.zip
+          path: iconic-deps-${{ matrix.config.os }}.zip
 
   create_release:
     name: Create release
@@ -109,6 +109,6 @@ jobs:
               -H 'Accept: application/vnd.github+json' \
               -H 'Authorization: Bearer ${{ github.token }}' \
               -H 'Content-Type: application/zip' \
-              --data-binary '@${{ steps.download.outputs.download-path }}/%' \
+              --data-binary '@${{ steps.download.outputs.download-path }}/%/%' \
               '$(cat uploads-url.txt)?name=%' \
               "
