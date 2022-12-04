@@ -102,6 +102,6 @@ jobs:
               -H 'Accept: application/vnd.github+json' \
               -H 'Authorization: Bearer ${{ github.token }}' \
               -H 'Content-Type: application/zip' \
-              --data-raw '@${{ steps.download.outputs.download-path }}/%' \
+              --data '@${{ steps.download.outputs.download-path }}/%' \
               '$(cat uploads-url.txt)?name=%' \
               "
