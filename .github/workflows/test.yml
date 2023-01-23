@@ -6,6 +6,7 @@ on:
 
 jobs:
   generate_assets:
+    # Generates assets to be included in the release
     name: Gelease assets
     runs-on: ${{ matrix.config.os }} # we run many different builds
     strategy:
@@ -22,16 +23,14 @@ jobs:
         uses: actions/checkout@v3
       # ... whatever build and packaging steps you need here
       - name: Zip assets
-        # uses: softprops/action-gh-release@v1
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # TODO: use real assets instead of test.bat, this is just used for testing
         run: zip iconic-deps-${{ matrix.config.os }}.zip test.bat
       # and finally do an upload!
       - name: Upload atrifacts
         uses: actions/upload-artifact@v3
         with:
           name: iconic-deps-${{ matrix.config.os }}.zip
-          path: iconic-deps-${{ matrix.config.os }}.zip
+          path: assets
 
   create_release:
     name: Create release
@@ -48,42 +47,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: ./artifacts
-      # - name: Create release
-      #   id: create_release
-      #   uses: softprops/action-gh-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref_name }}-${{ github.run_number }}
-      #     name: Release ${{ github.sha }}
-      #     draft: false
-      #     prerelease: false
-      #     files: ${{ steps.download.outputs.download-path }}/*
-      # # This is only needed currently because files in ^ is broken
-      # - name: list ${{ github.workspace }}
-      #   run: ls -la ${{ github.workspace }}
-      # - name: list ${{ steps.download.outputs.download-path }}
-      #   run: ls -la ${{ steps.download.outputs.download-path }}
-      # - name: Upload artifact ubuntu-latest
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     # asset_path: ${{ steps.download.outputs.download-path }}/iconic-deps-ubuntu-latest.zip
-      #     asset_path: ${{ github.workspace }}/test.bat
-      #     asset_name: iconic-deps-ubuntu-latest.zip
-      #     asset_content_type: application/octet-stream
-      # - name: Upload artifact macos-latest
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     # asset_path: ${{ steps.download.outputs.download-path }}/iconic-deps-macos-latest.zip
-      #     asset_path: ${{ github.workspace }}/test.bat
-      #     asset_name: iconic-deps-macos-latest.zip
-      #     asset_content_type: application/octet-stream
       - name: Create release
         run: |
           curl \
@@ -93,7 +56,7 @@ jobs:
           https://api.github.com/repos/${{ github.repository }}/releases \
           -d '{"tag_name":"${{ github.ref_name }}-${{ github.run_number }}","draft":false,"prerelease":false,"generate_release_notes":false}' \
           | json assets_url | sed 's/api/uploads/' > uploads-url.txt
-      - name: test
+      - name: List assets
         run: |
           ls ${{ steps.download.outputs.download-path }} \
           | xargs -I % sh -e -c " \
@@ -102,7 +65,7 @@ jobs:
 
       - name: Upload artifacts to release
         run: |
-          ls ${{ steps.download.outputs.download-path }} \
+          ls ${{ steps.download.outputs.download-path }}/assets \
           | xargs -I % sh -e -c " \
               curl -v \
               -X POST \
