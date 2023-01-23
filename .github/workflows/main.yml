@@ -21,6 +21,13 @@ jobs:
       with:
         path: installed
         key: ${{ matrix.config.os }}-vcpkg-install
+    
+    - uses: Jimver/cuda-toolkit@v0.2.8
+      id: cuda-toolkit
+      with:
+        cuda: '11.7.0'
+        
+        
         
     - name: Configure Pagefile (Windows)
       if: ${{ matrix.config.os == 'windows-latest' }}
@@ -40,6 +47,8 @@ jobs:
     - name: Export artifacts (Windows)
       if: ${{ matrix.config.os == 'windows-latest' }}
       run: ./iconic-export-dependencies.bat
+      
+      
       
     - name: Setup swap (Ubunut)
       if: ${{ matrix.config.os == 'ubuntu-latest' }}
