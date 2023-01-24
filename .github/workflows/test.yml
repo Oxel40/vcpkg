@@ -31,6 +31,17 @@ jobs:
         with:
           # name: iconic-deps-${{ matrix.config.os }}.zip  # defaults to atrifact
           path: iconic-deps-${{ matrix.config.os }}.zip
+          if-no-files-found: error
+          
+      - name: Zip assets pt2
+        # TODO: use real assets instead of test.bat, this is just used for testing
+        run: zip iconic-deps-${{ matrix.config.os }}2.zip test.bat
+      # and finally do an upload! Saves the artifact to be used in the release
+      - name: Upload atrifacts pt2
+        uses: actions/upload-artifact@v3
+        with:
+          # name: iconic-deps-${{ matrix.config.os }}.zip  # defaults to atrifact
+          path: iconic-deps-${{ matrix.config.os }}2.zip
           if-no-files-found: error 
 
   create_release:
